@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../store";
-import { getMovie, type Movie } from "../features/movies/moviesSlice";
+import {
+  getMovie,
+  getMoviesList,
+  type Movie,
+} from "../features/movies/moviesSlice";
 import MovieExpandable from "./movie";
 
 function MovieSearch() {
@@ -13,44 +17,59 @@ function MovieSearch() {
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [foundMovie, setFoundMovie] = useState<Movie>();
   const [movieId, setMovieId] = useState<number>();
+  const [combinedSearch, setCombinedSearch] = useState("");
   const selectedMovie = useSelector(
     (state: RootState) => state.movies.selected
   );
+  const moviesList = useSelector((state: RootState) => state.movies.list);
 
   const handleGetMovie = (e: React.FormEvent) => {
     e.preventDefault();
     if (movieId > 0) {
       dispatch(getMovie(movieId));
-    } else if (movieId == undefined) {
-      return;
+    } else {
+      const searchParams = {
+        actor,
+        title,
+        combinedSearch,
+        sort,
+        order,
+      };
+      dispatch(getMoviesList(searchParams));
     }
   };
 
   useEffect(() => {
     if (selectedMovie) {
-      //@ts-ignore
       setFoundMovie(selectedMovie.data);
     }
   }, [selectedMovie]);
+
+  useEffect(() => {
+    console.log(moviesList);
+  }, [moviesList]);
+
   return (
     <div className="search-form">
       <form onSubmit={handleGetMovie} className="search-switcher">
         {advancedSearch ? (
           <div className="advanced-search">
+            <p>Search by</p>
             <div className="search-by-box">
               <input
                 type="text"
-                placeholder="by Title"
+                placeholder="Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
               <input
                 type="text"
-                placeholder="by Actor"
+                placeholder="Actor"
                 value={actor}
                 onChange={(e) => setActor(e.target.value)}
               />
             </div>
+            <p>Sort by</p>
             <div className="select-container">
               <select
                 value={sort}
@@ -64,19 +83,25 @@ function MovieSearch() {
                 value={order}
                 onChange={(e) => setOrder(e.target.value as any)}
               >
-                <option value="ASC">Ascending</option>
-                <option value="DESC">Descending</option>
+                <option value="ASC">ASC</option>
+                <option value="DESC">DESC</option>
               </select>
             </div>
+            <p>Search by</p>
             <input
               type="number"
-              placeholder="Enter Movie ID"
+              placeholder="Movie ID"
               value={movieId}
               onChange={(e) => setMovieId(Number(e.target.value))}
             />
           </div>
         ) : (
-          <input type="text" placeholder="Search By Title or Actor" />
+          <input
+            value={combinedSearch}
+            type="text"
+            placeholder="Search by Title or Actor"
+            onChange={(e) => setCombinedSearch(e.target.value as any)}
+          />
         )}
         <label className="advanced-search-container">
           <input
@@ -88,8 +113,13 @@ function MovieSearch() {
         </label>
       </form>
       <div className="foundMovies">
-        {foundMovie && (
-          <MovieExpandable movieData={foundMovie}></MovieExpandable>
+        {movieId && selectedMovie ? (
+          <MovieExpandable movieData={foundMovie} />
+        ) : (
+          Array.isArray(moviesList?.data) &&
+          moviesList.data.map((movie, idx) => (
+            <MovieExpandable key={idx} movieData={movie} />
+          ))
         )}
       </div>
     </div>

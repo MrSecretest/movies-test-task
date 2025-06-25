@@ -28,6 +28,16 @@ export interface MovieInput {
   actors: string[];
 }
 
+interface SearchParams {
+  actor?: string;
+  title?: string;
+  combinedSearch?: string;
+  sort?: "id" | "title" | "year";
+  order?: "ASC" | "DESC";
+  limit?: string;
+  offset?: number;
+}
+
 interface MoviesState {
   list: Movie[];
   selected: Movie | null;
@@ -65,7 +75,7 @@ export const addMovie = createAsyncThunk<Movie, MovieInput>(
 );
 
 export const getMovie = createAsyncThunk<Movie, number>(
-  `show`,
+  `movies/show`,
   async (movieId, thunkAPI: any) => {
     try {
       const token = localStorage.getItem("token");
@@ -79,6 +89,39 @@ export const getMovie = createAsyncThunk<Movie, number>(
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to find a movie"
+      );
+    }
+  }
+);
+
+export const getMoviesList = createAsyncThunk<Movie[], SearchParams>(
+  `movies/list`,
+  async (params, thunkAPI: any) => {
+    try {
+      const token = localStorage.getItem("token");
+      const query: Record<string, string | number> = {};
+      if (params.combinedSearch) {
+        query["search"] = params.combinedSearch;
+      } else {
+        if (params.actor) query["actor"] = params.actor;
+        if (params.title) query["title"] = params.title;
+      }
+      if (params.sort) query["sort"] = params.sort;
+      if (params.order) query["order"] = params.order;
+      if (params.limit) query["limit"] = params.limit;
+      if (params.offset !== undefined) query["offset"] = params.offset;
+      const queryString = new URLSearchParams(query as any).toString();
+      console.log(queryString);
+      const response = await axios.get(`${API_URL}/movies?${queryString}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch movie list!"
       );
     }
   }
@@ -112,6 +155,15 @@ const moviesSlice = createSlice({
         state.error = action.payload as string;
         state.loading = false;
         state.selected = null;
+      })
+
+      .addCase(getMoviesList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMoviesList.fulfilled, (state, action) => {
+        state.list = action.payload;
+        state.error = null;
       });
   },
 });

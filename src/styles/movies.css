@@ -24,9 +24,21 @@
   padding: 25px;
   border-radius: 15px;
   gap: 10px;
-  position: absolute;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
 }
 
+.add-movies-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-movies-container > input {
+  width: 75px;
+}
 .advanced-search {
   display: flex;
   flex-direction: column;
@@ -78,9 +90,11 @@
 
 .foundMovies {
   display: flex;
-  align-items: start;
-  justify-content: center;
-  height: 800px;
+  align-items: center;
+  justify-content: start;
+  flex-direction: column;
+  gap: 10px;
+  height: 700px;
   margin: 25px;
   width: 300px;
   background-color: hsl(0, 0%, 7%);
@@ -96,4 +110,8 @@ select {
   background-color: #141414;
   padding-inline: 25px;
   text-align: center;
+}
+
+.secondary-text {
+  color: rgb(190, 190, 190);
 }

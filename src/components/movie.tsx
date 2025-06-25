@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { Movie } from "../features/movies/moviesSlice";
 
 type MovieExpandableProps = {
@@ -6,11 +6,14 @@ type MovieExpandableProps = {
 };
 
 function MovieExpandable({ movieData }: MovieExpandableProps) {
+  if (!movieData || !movieData.title || !movieData.year || !movieData.format) {
+    return null;
+  }
   return (
     <>
       <div className="movie-expandable">
         <p>{movieData?.title}</p>
-        <p>{movieData?.year}</p>
+        <p className="secondary-text">• {movieData?.year}</p>
         <button>More</button>
       </div>
     </>

@@ -1,15 +1,13 @@
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../store";
-import { useEffect, useState } from "react";
-import { addMovie, getMovie, type Movie } from "../features/movies/moviesSlice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../store";
+import { useState } from "react";
+import { addMovie } from "../features/movies/moviesSlice";
 import "../styles/movies.css";
-import MovieExpandable from "./movie";
 import MovieSearch from "./movieSearch";
 export default function Movies() {
   const [title, setTitle] = useState("");
   const [year, setYear] = useState<Number>();
   const [format, setFormat] = useState("");
-  const [actors, setActors] = useState<String[]>([]);
   const [actor, setActor] = useState("");
   const dispatch = useDispatch<AppDispatch>();
 
@@ -31,7 +29,7 @@ export default function Movies() {
       {addMoviePopup ? (
         <div className="popUp">
           <p>Add movie</p>
-          <form onSubmit={handleSubmit} className="authBox">
+          <form onSubmit={handleSubmit} className="add-movies-container">
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -59,9 +57,16 @@ export default function Movies() {
               type="names"
               required
             />
-            <button onSubmit={handleSubmit}>Submit</button>
+            <button style={{ marginTop: "20px" }} onSubmit={handleSubmit}>
+              Submit
+            </button>
           </form>
-          <button onClick={switchPopUpState}>Cancel</button>
+          <button
+            style={{ backgroundColor: "#200C0C" }}
+            onClick={switchPopUpState}
+          >
+            Cancel
+          </button>
         </div>
       ) : (
         <></>
