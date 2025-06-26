@@ -1,12 +1,12 @@
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../store";
 import { useEffect, useState } from "react";
-import { addMovie, type MovieInput } from "../features/movies/moviesSlice";
+import { addMovie } from "../features/movies/moviesSlice";
 import "../styles/movies.css";
 import MovieSearch from "./movieSearch";
 export default function Movies() {
   const [title, setTitle] = useState("");
-  const [year, setYear] = useState<Number>();
+  const [year, setYear] = useState<number>(0);
   const [format, setFormat] = useState("");
   const [actor, setActor] = useState("");
   const [txtFile, setTxtFile] = useState<string>("");

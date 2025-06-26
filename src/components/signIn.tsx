@@ -3,7 +3,10 @@ import type { AppDispatch, RootState } from "../store";
 import { useState } from "react";
 import { sessionCreate } from "../features/users/sessionSlice";
 
-export default function SignUp() {
+interface SignUpProps {
+  onSuccess: () => void;
+}
+export default function SignUp({ onSuccess }: SignUpProps) {
   const sessionStatus = useSelector((state: RootState) => state.session.status);
   const error = useSelector((state: RootState) => state.session.error);
   const dispatch = useDispatch<AppDispatch>();
@@ -12,14 +15,18 @@ export default function SignUp() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(sessionCreate({ email, password }));
+    dispatch(sessionCreate({ email, password }))
+      .unwrap()
+      .then(() => {
+        onSuccess();
+      });
   };
   return (
     <form onSubmit={handleSubmit} className="auth-box">
       <p
         style={{ fontSize: "large", fontWeight: "800px", marginBottom: "30px" }}
       >
-        Create New Account
+        Sign In
       </p>
       <input
         value={email}
@@ -38,8 +45,12 @@ export default function SignUp() {
       <button style={{ marginTop: "30px" }} type="submit">
         Sign In
       </button>
-      {sessionStatus === "loading" && <p>Signing you up...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {sessionStatus === "loading" && <p>Signing you in...</p>}
+      {error && (
+        <p style={{ color: "red", marginTop: "20px", width: "200px" }}>
+          {error}
+        </p>
+      )}
     </form>
   );
 }

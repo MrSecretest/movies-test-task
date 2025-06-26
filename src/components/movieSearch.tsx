@@ -16,11 +16,13 @@ function MovieSearch() {
   const [order, setOrder] = useState<"ASC" | "DESC">("ASC");
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [foundMovie, setFoundMovie] = useState<Movie>();
-  const [movieId, setMovieId] = useState<number>();
+  const [movieId, setMovieId] = useState<number>(0);
   const [combinedSearch, setCombinedSearch] = useState("");
+
   const selectedMovie = useSelector(
     (state: RootState) => state.movies.selected
   );
+
   const moviesList = useSelector((state: RootState) => state.movies.list);
 
   const handleGetMovie = (e: React.FormEvent) => {
@@ -36,7 +38,7 @@ function MovieSearch() {
         order,
         limit: "1000",
       };
-      dispatch(getMoviesList(searchParams));
+      if (combinedSearch.length != 1) dispatch(getMoviesList(searchParams));
     }
   };
 
@@ -119,13 +121,17 @@ function MovieSearch() {
       </form>
       <div className="foundMovies">
         <p>Movies: {moviesList.length}</p>
-        {movieId && selectedMovie ? (
+        {movieId && foundMovie && selectedMovie ? (
           <MovieExpandable movieData={foundMovie} />
         ) : (
           Array.isArray(moviesList) &&
-          moviesList.map((movie) => (
-            <MovieExpandable key={movie.id} movieData={movie} />
-          ))
+          moviesList.map((movie) => {
+            if (!movie || !movie.id || !movie.title) {
+              return null;
+            }
+
+            return <MovieExpandable key={movie.id} movieData={movie} />;
+          })
         )}
       </div>
     </div>

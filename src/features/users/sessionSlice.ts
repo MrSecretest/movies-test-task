@@ -4,6 +4,7 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_URL } from "../../config";
 
 interface AuthCredentials {
   email: string;
@@ -22,26 +23,27 @@ const initialState: SessionState = {
   error: null,
 };
 
-const API_URL = "http://localhost:8000/api/v1";
-
 export const sessionCreate = createAsyncThunk<string, AuthCredentials>(
   `sessions`,
   async (UserData: AuthCredentials, thunkAPI: any) => {
-    try {
-      const response = await axios.post(`${API_URL}/sessions`, UserData);
-      const token = response.data.token;
-      console.log(response);
-      console.log(token);
-      console.log(UserData);
-      localStorage.setItem("token", token);
-      window.location.reload();
+    const response = await axios.post(`${API_URL}/sessions`, UserData);
 
-      return token;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Session failed"
-      );
+    if (response.data?.status === 0 && response.data?.error) {
+      const code = response.data.error.code;
+      const errorMessage = code ? `Error: ${code}` : "Signup failed";
+      let errorMessageReadable = "";
+      if (errorMessage == "FORMAT_ERROR") {
+        errorMessageReadable = "Format error";
+      } else {
+        errorMessageReadable =
+          "Something went wrong, check your credentials again";
+      }
+      return thunkAPI.rejectWithValue(errorMessageReadable);
     }
+    const token = response.data.token;
+    console.log(token);
+    localStorage.setItem("token", token);
+    return token;
   }
 );
 const sessionSlice = createSlice({

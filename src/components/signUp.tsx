@@ -3,25 +3,35 @@ import type { AppDispatch, RootState } from "../store";
 import { useState } from "react";
 import { userCreate } from "../features/users/usersSlice";
 
-export default function SignUp() {
-  const sessionStatus = useSelector((state: RootState) => state.session.status);
-  const error = useSelector((state: RootState) => state.session.error);
+interface SignUpProps {
+  onSuccess: () => void;
+}
+
+export default function SignUp({ onSuccess }: SignUpProps) {
+  const userStatus = useSelector((state: RootState) => state.user.status);
+  const error = useSelector((state: RootState) => state.user.error);
   const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
 
+  const accountInfo = useSelector((state: RootState) => state.user.infoStatus);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(userCreate({ email, name, password, confirmPassword }));
+    dispatch(userCreate({ email, name, password, confirmPassword }))
+      .unwrap()
+      .then(() => {
+        onSuccess();
+      });
   };
+
   return (
     <form onSubmit={handleSubmit} className="auth-box">
       <p
         style={{ fontSize: "large", fontWeight: "800px", marginBottom: "30px" }}
       >
-        Sign In
+        Create New Account
       </p>
       <input
         value={email}
@@ -47,15 +57,26 @@ export default function SignUp() {
       <input
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
-        placeholder="Password"
+        placeholder="Repeat password"
         type="password"
         required
       />
       <button style={{ marginTop: "30px" }} type="submit">
         Sign Up
       </button>
-      {sessionStatus === "loading" && <p>Signing you up...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {userStatus === "loading" && <p>Signing you up...</p>}
+
+      {accountInfo ? (
+        <p style={{ color: "green", marginTop: "20px", width: "200px" }}>
+          {accountInfo}
+        </p>
+      ) : (
+        error && (
+          <p style={{ color: "red", marginTop: "20px", width: "200px" }}>
+            {error}
+          </p>
+        )
+      )}
     </form>
   );
 }

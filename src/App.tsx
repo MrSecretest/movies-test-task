@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { logout } from "./features/users/sessionSlice";
 import type { AppDispatch } from "./store";
 import Movies from "./components/movies";
-import MoviesBG from "./media/movies-bg.jpg";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -46,7 +45,11 @@ function App() {
           <>
             <div className="auth-container">
               <div className="auth-col">
-                {signingUp ? <SignUp /> : <SignIn />}
+                {signingUp ? (
+                  <SignUp onSuccess={() => setLoggedIn(true)} />
+                ) : (
+                  <SignIn onSuccess={() => setLoggedIn(true)} />
+                )}
                 <a
                   href="#"
                   onClick={(e) => {

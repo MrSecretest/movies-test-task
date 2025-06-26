@@ -1,9 +1,6 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  type PayloadAction,
-} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_URL } from "../../config";
 
 export interface Actor {
   id: string;
@@ -53,7 +50,6 @@ const initialState: MoviesState = {
   loading: false,
   error: null,
 };
-const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/v1`;
 
 export const addMovie = createAsyncThunk<Movie, MovieInput>(
   `movies`,
@@ -88,7 +84,8 @@ export const getMovie = createAsyncThunk<Movie, number>(
           Authorization: `${token}`,
         },
       });
-      //console.log(response.data);
+      console.log(`${API_URL}/movies/${movieId}`);
+      console.log(response.data);
       return response.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
@@ -135,7 +132,7 @@ export const getMoviesList = createAsyncThunk<Movie[], SearchParams>(
 
 export const deleteMovie = createAsyncThunk<string, number>(
   `movies/delete`,
-  async (id, thunkAPI: any) => {
+  async (id) => {
     const token = localStorage.getItem("token");
     const response = await axios.delete(`${API_URL}/movies/${id}`, {
       headers: {
@@ -172,14 +169,19 @@ const moviesSlice = createSlice({
       })
       .addCase(getMovie.fulfilled, (state, action) => {
         const movie = action.payload;
-        state.selected = movie;
+        //@ts-ignore
+        state.selected = movie.data;
+        //@ts-ignore
         state.byId[movie.data.id] = movie.data;
-        console.log(movie);
+        //@ts-ignore
+        console.log(movie.data);
         state.loading = false;
       })
       .addCase(getMovie.rejected, (state, action) => {
-        state.error = action.payload as string;
+        const movie = action.payload;
+        state.error = movie as string;
         state.loading = false;
+        console.log(movie);
         state.selected = null;
       })
 
