@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 
-interface Actor {
+export interface Actor {
   id: string;
   name: string;
   createdAt: string;
@@ -40,6 +40,7 @@ interface SearchParams {
 
 interface MoviesState {
   list: Movie[];
+  byId: Record<number, Movie>;
   selected: Movie | null;
   loading: boolean;
   error: string | null;
@@ -47,11 +48,12 @@ interface MoviesState {
 
 const initialState: MoviesState = {
   list: [],
+  byId: {},
   selected: null,
   loading: false,
   error: null,
 };
-const API_URL = "http://localhost:8000/api/v1";
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/v1`;
 
 export const addMovie = createAsyncThunk<Movie, MovieInput>(
   `movies`,
@@ -64,11 +66,13 @@ export const addMovie = createAsyncThunk<Movie, MovieInput>(
           Authorization: `${token}`,
         },
       });
+
+      console.log(movieData);
       console.log(response.data);
-      return response.data;
+      return response.data.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Failed to add movie"
+        err.response?.data?.data.message || "Failed to add movie"
       );
     }
   }
@@ -84,11 +88,11 @@ export const getMovie = createAsyncThunk<Movie, number>(
           Authorization: `${token}`,
         },
       });
-      console.log(response.data);
+      //console.log(response.data);
       return response.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Failed to find a movie"
+        err.response?.data?.data.message || "Failed to find a movie"
       );
     }
   }
@@ -111,19 +115,33 @@ export const getMoviesList = createAsyncThunk<Movie[], SearchParams>(
       if (params.limit) query["limit"] = params.limit;
       if (params.offset !== undefined) query["offset"] = params.offset;
       const queryString = new URLSearchParams(query as any).toString();
-      console.log(queryString);
+      //console.log(queryString);
       const response = await axios.get(`${API_URL}/movies?${queryString}`, {
         headers: {
           Authorization: `${token}`,
         },
       });
-      console.log(response.data);
-      return response.data;
+
+      //console.log(response.data);
+      return response.data.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to fetch movie list!"
+        error.response?.data?.data.message || "Failed to fetch movie list!"
       );
     }
+  }
+);
+
+export const deleteMovie = createAsyncThunk<string, number>(
+  `movies/delete`,
+  async (id, thunkAPI: any) => {
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(`${API_URL}/movies/${id}`, {
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+    return response.data;
   }
 );
 
@@ -148,7 +166,10 @@ const moviesSlice = createSlice({
         state.error = null;
       })
       .addCase(getMovie.fulfilled, (state, action) => {
-        state.selected = action.payload;
+        const movie = action.payload;
+        state.selected = movie;
+        state.byId[movie.data.id] = movie.data;
+        console.log(movie);
         state.loading = false;
       })
       .addCase(getMovie.rejected, (state, action) => {
@@ -164,6 +185,13 @@ const moviesSlice = createSlice({
       .addCase(getMoviesList.fulfilled, (state, action) => {
         state.list = action.payload;
         state.error = null;
+      })
+
+      .addCase(deleteMovie.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteMovie.fulfilled, (state) => {
+        state.loading = false;
       });
   },
 });

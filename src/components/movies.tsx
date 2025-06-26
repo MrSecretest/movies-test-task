@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../store";
-import { useState } from "react";
-import { addMovie } from "../features/movies/moviesSlice";
+import { useEffect, useState } from "react";
+import { addMovie, type MovieInput } from "../features/movies/moviesSlice";
 import "../styles/movies.css";
 import MovieSearch from "./movieSearch";
 export default function Movies() {
@@ -9,15 +9,79 @@ export default function Movies() {
   const [year, setYear] = useState<Number>();
   const [format, setFormat] = useState("");
   const [actor, setActor] = useState("");
+  const [txtFile, setTxtFile] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
 
-  const [addMoviePopup, setAddMoviePopup] = useState(true);
+  const [addMoviePopup, setAddMoviePopup] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(actor);
+    const actorsArray = actor.split(",").map((actor) => actor.trim());
+    console.log(actorsArray);
+
     dispatch(
-      addMovie({ title: title, year: year, format: format, actors: [actor] })
+      addMovie({
+        title: title,
+        year: year,
+        format: format,
+        actors: actorsArray,
+      })
     );
+  };
+  useEffect(() => {
+    if (txtFile) {
+      textProccesing();
+    }
+  }, [txtFile]);
+  const handleTextFileSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target) setTxtFile(e.target.result as string);
+    };
+    reader.readAsText(file);
+  };
+
+  const textProccesing = () => {
+    const moviesArray = txtFile.trim().split(/\n\s*\n/);
+    interface MovieFormatted {
+      title: string;
+      year: number;
+      format: string;
+      actors: string[];
+    }
+    const moviesResult: MovieFormatted[] = [];
+
+    moviesArray.map((block) => {
+      let movieFormatted: MovieFormatted = {
+        title: "",
+        year: 0,
+        format: "",
+        actors: [],
+      };
+      const lines = block.split("\n");
+      lines.forEach((line) => {
+        if (line.startsWith("Title:")) {
+          movieFormatted.title = line.slice(6).trim();
+        } else if (line.startsWith("Release Year:")) {
+          movieFormatted.year = Number(line.slice(13).trim());
+        } else if (line.startsWith("Format:")) {
+          movieFormatted.format = line.slice(7).trim();
+        } else if (line.startsWith("Stars:")) {
+          movieFormatted.actors = line
+            .slice(6)
+            .split(",")
+            .map((actor) => actor.trim());
+        }
+      });
+      moviesResult.push(movieFormatted);
+    });
+    console.log(moviesResult);
+    moviesResult.map((movie) => {
+      dispatch(addMovie(movie));
+    });
   };
 
   const switchPopUpState = () => {
@@ -50,21 +114,25 @@ export default function Movies() {
               placeholder="Format"
               required
             />
-            <input
+            <textarea
+              className="add-actors"
               value={actor}
               onChange={(e) => setActor(e.target.value)}
-              placeholder="Actor"
-              type="names"
+              placeholder="Actors"
               required
+            />
+            <p>Or load .TXT file down below</p>
+            <input
+              type="file"
+              id="txtpicker"
+              accept=".txt"
+              onChange={handleTextFileSubmit}
             />
             <button style={{ marginTop: "20px" }} onSubmit={handleSubmit}>
               Submit
             </button>
           </form>
-          <button
-            style={{ backgroundColor: "#200C0C" }}
-            onClick={switchPopUpState}
-          >
+          <button className="caution" onClick={switchPopUpState}>
             Cancel
           </button>
         </div>

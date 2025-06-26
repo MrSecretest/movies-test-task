@@ -4,21 +4,41 @@
   text-align: start;
 }
 
+.foundMovies {
+  overflow-y: scroll;
+  max-height: 650px;
+  margin: 25px;
+  width: 500px;
+  background-color: hsl(0, 0%, 7%);
+  padding: 15px;
+  border-radius: 10px;
+  place-items: center;
+}
+
 .movie-expandable {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   background: #070707;
+  overflow: hidden;
   padding: 5px;
   border-radius: 10px;
-  height: fit-content;
+  height: 40px;
+  margin-block: 5px;
   align-items: center;
-  width: 100%;
+  width: 400px;
   padding-inline: 10px;
+}
+
+.movie-expandable p {
+  max-height: 45px;
+  max-width: 135px;
 }
 
 .popUp {
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
   background-color: #070707;
   padding: 25px;
@@ -34,10 +54,13 @@
 .add-movies-container {
   display: flex;
   flex-direction: column;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
 }
 
 .add-movies-container > input {
-  width: 75px;
+  width: 70%;
 }
 .advanced-search {
   display: flex;
@@ -75,6 +98,7 @@
   border-radius: 10px;
   flex-direction: column;
   width: 275px;
+  align-items: center;
 }
 .advanced-search-container {
   display: flex;
@@ -88,30 +112,34 @@
   color: #000;
 }
 
-.foundMovies {
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  flex-direction: column;
-  gap: 10px;
-  height: 700px;
-  margin: 25px;
-  width: 300px;
-  background-color: hsl(0, 0%, 7%);
-  padding: 15px;
-  border-radius: 10px;
+.add-actors {
+  resize: none;
 }
+
 input,
-select {
-  height: 30px;
+textarea {
   border-radius: 10px;
   border: 1px rgba(255, 255, 255, 0.257) solid;
   margin: 5px;
   background-color: #141414;
   padding-inline: 25px;
   text-align: center;
+  padding: 5px;
+}
+
+textarea {
+  height: 80px;
+}
+
+select {
+  height: 30px;
+  border-radius: 10px;
+  background-color: #141414;
+  border: 1px rgba(255, 255, 255, 0.257) solid;
+  margin: 5px;
 }
 
 .secondary-text {
+  font-size: small;
   color: rgb(190, 190, 190);
 }

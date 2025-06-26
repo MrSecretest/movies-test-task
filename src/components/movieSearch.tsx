@@ -41,7 +41,7 @@ function MovieSearch() {
 
   useEffect(() => {
     if (selectedMovie) {
-      setFoundMovie(selectedMovie.data);
+      setFoundMovie(selectedMovie);
     }
   }, [selectedMovie]);
 
@@ -103,6 +103,7 @@ function MovieSearch() {
             onChange={(e) => setCombinedSearch(e.target.value as any)}
           />
         )}
+        <button onSubmit={handleGetMovie}>Search</button>
         <label className="advanced-search-container">
           <input
             type="checkbox"
@@ -116,8 +117,8 @@ function MovieSearch() {
         {movieId && selectedMovie ? (
           <MovieExpandable movieData={foundMovie} />
         ) : (
-          Array.isArray(moviesList?.data) &&
-          moviesList.data.map((movie, idx) => (
+          Array.isArray(moviesList) &&
+          moviesList.map((movie, idx) => (
             <MovieExpandable key={idx} movieData={movie} />
           ))
         )}

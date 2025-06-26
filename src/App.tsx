@@ -37,10 +37,7 @@ function App() {
           {loggedIn ? (
             <>
               <Movies />
-              <button
-                style={{ backgroundColor: "#200C0C" }}
-                onClick={handleLogout}
-              >
+              <button className="caution" onClick={handleLogout}>
                 Log out
               </button>
             </>
