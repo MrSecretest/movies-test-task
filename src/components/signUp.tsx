@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../store";
 import { useState } from "react";
 import { userCreate } from "../features/users/usersSlice";
-import "../styles/auth.css";
 
 export default function SignUp() {
   const sessionStatus = useSelector((state: RootState) => state.session.status);
@@ -19,6 +18,11 @@ export default function SignUp() {
   };
   return (
     <form onSubmit={handleSubmit} className="auth-box">
+      <p
+        style={{ fontSize: "large", fontWeight: "800px", marginBottom: "30px" }}
+      >
+        Sign In
+      </p>
       <input
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -47,7 +51,9 @@ export default function SignUp() {
         type="password"
         required
       />
-      <button type="submit">Sign Up</button>
+      <button style={{ marginTop: "30px" }} type="submit">
+        Sign Up
+      </button>
       {sessionStatus === "loading" && <p>Signing you up...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
     </form>

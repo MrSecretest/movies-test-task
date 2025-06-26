@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   deleteMovie,
   getMovie,
+  getMoviesList,
   type Actor,
   type Movie,
 } from "../features/movies/moviesSlice";
@@ -15,7 +16,6 @@ type MovieExpandableProps = {
 function MovieExpandable({ movieData }: MovieExpandableProps) {
   const dispatch = useDispatch<AppDispatch>();
   const [expanded, setExpanded] = useState(false);
-  const [deleted, setDeleted] = useState(false);
   const movieDetails = useSelector(
     (state: RootState) => state.movies.byId[movieData.id]
   );
@@ -23,9 +23,14 @@ function MovieExpandable({ movieData }: MovieExpandableProps) {
     return null;
   }
 
-  const handleDelete = () => {
-    dispatch(deleteMovie(movieData.id));
-    setDeleted(!deleted);
+  const handleDelete = async () => {
+    const result = await dispatch(deleteMovie(movieData.id));
+
+    if (deleteMovie.fulfilled.match(result)) {
+      dispatch(getMoviesList({ limit: "1000" }));
+    } else {
+      console.error("Failed to delete movie:", result.payload);
+    }
   };
 
   const handleMoreInfo = () => {
@@ -37,31 +42,33 @@ function MovieExpandable({ movieData }: MovieExpandableProps) {
 
   return (
     <>
-      {!deleted && (
-        <>
-          <div className="movie-expandable">
-            <p>{movieData?.title}</p>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
-              <p className="secondary-text">• {movieData?.year}</p>
-              <button onClick={handleMoreInfo}>More</button>
-              <button className="caution" onClick={handleDelete}>
-                Delete
-              </button>
-            </div>
+      <>
+        <div className="movie-expandable">
+          <p>{movieData?.title}</p>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <p className="secondary-text">• {movieData?.year}</p>
+            <button onClick={handleMoreInfo}>More</button>
+            <button className="caution" onClick={handleDelete}>
+              Delete
+            </button>
           </div>
-          {expanded &&
-            movieDetails?.actors?.map((actor: Actor) => (
-              <p key={actor.id}>{actor.name}</p>
+        </div>
+        {expanded && (
+          <div className="add-info">
+            <h4>Actors</h4>
+            {movieDetails?.actors?.map((actor: Actor) => (
+              <p key={actor.id}>•{actor.name}</p>
             ))}
-        </>
-      )}
+          </div>
+        )}
+      </>
     </>
   );
 }

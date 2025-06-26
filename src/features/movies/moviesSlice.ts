@@ -113,7 +113,8 @@ export const getMoviesList = createAsyncThunk<Movie[], SearchParams>(
       if (params.sort) query["sort"] = params.sort;
       if (params.order) query["order"] = params.order;
       if (params.limit) query["limit"] = params.limit;
-      if (params.offset !== undefined) query["offset"] = params.offset;
+      query["offset"] = params.offset ?? 0;
+
       const queryString = new URLSearchParams(query as any).toString();
       //console.log(queryString);
       const response = await axios.get(`${API_URL}/movies?${queryString}`, {
@@ -159,6 +160,10 @@ const moviesSlice = createSlice({
         state.list.push(action.payload);
         state.loading = false;
         state.error = null;
+      })
+      .addCase(addMovie.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
 
       .addCase(getMovie.pending, (state) => {

@@ -34,6 +34,7 @@ function MovieSearch() {
         combinedSearch,
         sort,
         order,
+        limit: "1000",
       };
       dispatch(getMoviesList(searchParams));
     }
@@ -96,12 +97,15 @@ function MovieSearch() {
             />
           </div>
         ) : (
-          <input
-            value={combinedSearch}
-            type="text"
-            placeholder="Search by Title or Actor"
-            onChange={(e) => setCombinedSearch(e.target.value as any)}
-          />
+          <div>
+            <p>Search by</p>
+            <input
+              value={combinedSearch}
+              type="text"
+              placeholder="Title or Actor"
+              onChange={(e) => setCombinedSearch(e.target.value as any)}
+            />
+          </div>
         )}
         <button onSubmit={handleGetMovie}>Search</button>
         <label className="advanced-search-container">
@@ -114,12 +118,13 @@ function MovieSearch() {
         </label>
       </form>
       <div className="foundMovies">
+        <p>Movies: {moviesList.length}</p>
         {movieId && selectedMovie ? (
           <MovieExpandable movieData={foundMovie} />
         ) : (
           Array.isArray(moviesList) &&
-          moviesList.map((movie, idx) => (
-            <MovieExpandable key={idx} movieData={movie} />
+          moviesList.map((movie) => (
+            <MovieExpandable key={movie.id} movieData={movie} />
           ))
         )}
       </div>

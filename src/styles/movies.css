@@ -9,10 +9,13 @@
   max-height: 650px;
   margin: 25px;
   width: 500px;
-  background-color: hsl(0, 0%, 7%);
-  padding: 15px;
+  background-color: #111111d7;
   border-radius: 10px;
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  box-shadow: #000000 0px 0px 50px;
   place-items: center;
+  height: 750px;
 }
 
 .movie-expandable {
@@ -33,6 +36,16 @@
 .movie-expandable p {
   max-height: 45px;
   max-width: 135px;
+}
+
+.add-info {
+  text-align: left;
+  background-color: #070707;
+  padding: 10px;
+  border-radius: 10px;
+}
+.add-info p {
+  color: rgb(191, 191, 191);
 }
 
 .popUp {
@@ -65,11 +78,14 @@
 .advanced-search {
   display: flex;
   flex-direction: column;
+  height: 250px;
+  overflow: hidden;
 }
 
 .select-container {
   display: flex;
   flex-direction: row;
+  overflow: hidden;
 }
 .select-container select {
   width: 100%;
@@ -85,6 +101,7 @@
 .search-by-box {
   display: flex;
   flex-direction: row;
+  overflow: hidden;
 }
 .search-by-box input {
   width: 75px;
@@ -92,11 +109,14 @@
 
 .search-switcher {
   display: flex;
-  height: fit-content;
-  background-color: #070707;
-  padding: 10px;
+  max-height: 340px;
+  background-color: #111111d7;
   border-radius: 10px;
+  backdrop-filter: blur(10px);
+  box-shadow: #000000 0px 0px 50px;
+  padding-top: 10px;
   flex-direction: column;
+  gap: 10px;
   width: 275px;
   align-items: center;
 }
@@ -105,6 +125,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 .advanced-search-container input {
   accent-color: #141414;
@@ -127,6 +148,9 @@ textarea {
   padding: 5px;
 }
 
+input {
+  height: 25px;
+}
 textarea {
   height: 80px;
 }

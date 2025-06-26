@@ -6,6 +6,8 @@ import { useDispatch } from "react-redux";
 import { logout } from "./features/users/sessionSlice";
 import type { AppDispatch } from "./store";
 import Movies from "./components/movies";
+import MoviesBG from "./media/movies-bg.jpg";
+
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const [loggedIn, setLoggedIn] = useState(false);
@@ -32,19 +34,19 @@ function App() {
 
   return (
     <>
-      <div className="c">
-        <div className="auth-wrapper">
-          {loggedIn ? (
-            <>
-              <Movies />
-              <button className="caution" onClick={handleLogout}>
-                Log out
-              </button>
-            </>
-          ) : (
-            <>
-              {signingUp ? <SignUp /> : <SignIn />}
-              <div style={{ marginTop: "1rem" }}>
+      <div className="website-page">
+        {loggedIn ? (
+          <>
+            <Movies />
+            <button className="caution" onClick={handleLogout}>
+              Log out
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="auth-container">
+              <div className="auth-col">
+                {signingUp ? <SignUp /> : <SignIn />}
                 <a
                   href="#"
                   onClick={(e) => {
@@ -57,9 +59,9 @@ function App() {
                     : "Don't have an account? Sign Up"}
                 </a>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

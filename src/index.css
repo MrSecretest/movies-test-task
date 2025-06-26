@@ -15,14 +15,15 @@ select,
 :root {
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #000000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
+  font-weight: 300;
+  color: #c1c3e9;
+  font-size: medium;
   text-decoration: inherit;
 }
 a:hover {
@@ -31,12 +32,31 @@ a:hover {
 
 body {
   margin: 0;
-  place-items: center;
+  width: 100vw;
+}
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-image: url("./media/movies-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  opacity: 0.2;
+  z-index: -1;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+p {
+  overflow: hidden;
 }
 
 button {
@@ -54,6 +74,7 @@ button {
   align-items: center;
   justify-content: center;
   border: 1px rgba(255, 255, 255, 0.089) solid;
+  overflow: hidden;
 }
 button:hover {
   border-color: #3d3d3d;
@@ -68,22 +89,9 @@ button:hover {
   border: 1px solid hsl(0, 45%, 30%);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-.website-body {
+.website-page {
   display: flex;
-  height: 80vh;
+  height: 100vh;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
@@ -93,4 +101,42 @@ button:hover {
   display: flex;
   align-items: center;
   flex-direction: column;
+  position: relative;
+  width: 100vw;
+  background-image: url("./media/movies-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.auth-col {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #111111d7;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  box-shadow: #000000 0px 0px 50px;
+  width: fit-content;
+  height: fit-content;
+  padding: 5px;
+}
+
+.auth-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 10px;
+  width: fit-content;
+  height: fit-content;
+  padding: 30px;
 }
