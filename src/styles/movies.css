@@ -111,7 +111,7 @@
 .search-switcher {
   display: flex;
   max-height: 340px;
-  min-height: 185px;
+  min-height: 195px;
   background-color: #111111d7;
   border-radius: 10px;
   backdrop-filter: blur(10px);
