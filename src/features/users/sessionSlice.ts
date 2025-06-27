@@ -33,10 +33,9 @@ export const sessionCreate = createAsyncThunk<string, AuthCredentials>(
     console.log(`${API}/sessions`);
     if (response.data?.status === 0 && response.data?.error) {
       const code = response.data.error.code;
-      const errorMessage = code ? `Error: ${code}` : "Signup failed";
       let errorMessageReadable = "";
-      if (errorMessage == "FORMAT_ERROR") {
-        errorMessageReadable = "Format error";
+      if (code == "AUTHENTICATION_FAILED") {
+        errorMessageReadable = "Authentification error";
       } else {
         errorMessageReadable =
           "Something went wrong, check your credentials again";
@@ -73,7 +72,7 @@ const sessionSlice = createSlice({
       )
       .addCase(sessionCreate.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message || "Login failed";
+        (action.payload as string) || action.error.message || "Sign in failed";
       });
   },
 });

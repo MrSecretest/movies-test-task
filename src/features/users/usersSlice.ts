@@ -38,11 +38,10 @@ export const userCreate = createAsyncThunk<string, AuthCredentials>(
 
     if (response.data?.status === 0 && response.data?.error) {
       const code = response.data.error.code;
-      const errorMessage = code ? `Error: ${code}` : "Signup failed";
       let errorMessageReadable = "";
-      if (errorMessage == "FORMAT_ERROR") {
+      if (code == "FORMAT_ERROR") {
         errorMessageReadable = "Format error";
-      } else if (errorMessage == "EMAIL_NOT_UNIQUE") {
+      } else if (code == "EMAIL_NOT_UNIQUE") {
         errorMessageReadable = "Email is already taken";
       } else {
         errorMessageReadable =

@@ -19,6 +19,10 @@ export default function SignUp({ onSuccess }: SignUpProps) {
   const accountInfo = useSelector((state: RootState) => state.user.infoStatus);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
     dispatch(userCreate({ email, name, password, confirmPassword }))
       .unwrap()
       .then(() => {

@@ -1,9 +1,11 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "../store";
 import { useEffect, useState } from "react";
 import { addMovie } from "../features/movies/moviesSlice";
 import "../styles/movies.css";
 import MovieSearch from "./movieSearch";
+import type { RootState } from "../store";
+
 export default function Movies() {
   const [title, setTitle] = useState("");
   const [year, setYear] = useState<number>(0);
@@ -11,8 +13,8 @@ export default function Movies() {
   const [actor, setActor] = useState("");
   const [txtFile, setTxtFile] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
-
   const [addMoviePopup, setAddMoviePopup] = useState(false);
+  const errorAddMovie = useSelector((state: RootState) => state.movies.error);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,6 +135,7 @@ export default function Movies() {
               Submit
             </button>
           </form>
+          <p style={{ color: "red" }}>{errorAddMovie}</p>
           <button className="caution" onClick={switchPopUpState}>
             Cancel
           </button>

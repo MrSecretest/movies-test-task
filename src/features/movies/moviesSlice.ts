@@ -52,24 +52,22 @@ let API: string;
 export const addMovie = createAsyncThunk<Movie, MovieInput>(
   `movies`,
   async (movieData: MovieInput, thunkAPI: any) => {
-    try {
-      API = API_URL.includes("http") ? API_URL : import.meta.env.VITE_API_URL;
-      const token = localStorage.getItem("token");
+    API = API_URL.includes("http") ? API_URL : import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem("token");
 
-      const response = await axios.post(`${API}/movies`, movieData, {
-        headers: {
-          Authorization: `${token}`,
-        },
-      });
-
-      console.log(movieData);
-      console.log(response.data);
-      return response.data.data;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.data.message || "Failed to add movie"
-      );
+    const response = await axios.post(`${API}/movies`, movieData, {
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+    if (response.data?.status === 0 && response.data?.error) {
+      let errorMessageReadable = "";
+      errorMessageReadable = "Something went wrong, check movie details again";
+      return thunkAPI.rejectWithValue(errorMessageReadable);
     }
+    console.log(movieData);
+    console.log(response.data);
+    return response.data.data;
   }
 );
 
