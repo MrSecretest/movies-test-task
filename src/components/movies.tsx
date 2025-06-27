@@ -33,6 +33,7 @@ export default function Movies() {
     if (txtFile) {
       textProccesing();
     }
+    setTxtFile("");
   }, [txtFile]);
   const handleTextFileSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

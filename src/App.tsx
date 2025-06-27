@@ -51,6 +51,7 @@ function App() {
                   <SignIn onSuccess={() => setLoggedIn(true)} />
                 )}
                 <a
+                  style={{ paddingBottom: "10px" }}
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();

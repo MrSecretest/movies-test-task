@@ -23,11 +23,14 @@ const initialState: SessionState = {
   error: null,
 };
 
+let API: string;
+
 export const sessionCreate = createAsyncThunk<string, AuthCredentials>(
   `sessions`,
   async (UserData: AuthCredentials, thunkAPI: any) => {
-    const response = await axios.post(`${API_URL}/sessions`, UserData);
-
+    API = API_URL.includes("http") ? API_URL : import.meta.env.VITE_API_URL;
+    const response = await axios.post(`${API}/sessions`, UserData);
+    console.log(`${API}/sessions`);
     if (response.data?.status === 0 && response.data?.error) {
       const code = response.data.error.code;
       const errorMessage = code ? `Error: ${code}` : "Signup failed";

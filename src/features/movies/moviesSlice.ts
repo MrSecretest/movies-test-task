@@ -38,7 +38,6 @@ interface SearchParams {
 interface MoviesState {
   list: Movie[];
   byId: Record<number, Movie>;
-  selected: Movie | null;
   loading: boolean;
   error: string | null;
 }
@@ -46,18 +45,18 @@ interface MoviesState {
 const initialState: MoviesState = {
   list: [],
   byId: {},
-  selected: null,
   loading: false,
   error: null,
 };
-
+let API: string;
 export const addMovie = createAsyncThunk<Movie, MovieInput>(
   `movies`,
   async (movieData: MovieInput, thunkAPI: any) => {
     try {
+      API = API_URL.includes("http") ? API_URL : import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("token");
 
-      const response = await axios.post(`${API_URL}/movies`, movieData, {
+      const response = await axios.post(`${API}/movies`, movieData, {
         headers: {
           Authorization: `${token}`,
         },
@@ -78,14 +77,15 @@ export const getMovie = createAsyncThunk<Movie, number>(
   `movies/show`,
   async (movieId, thunkAPI: any) => {
     try {
+      API = API_URL.includes("http") ? API_URL : import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${API_URL}/movies/${movieId}`, {
+      const response = await axios.get(`${API}/movies/${movieId}`, {
         headers: {
           Authorization: `${token}`,
         },
       });
-      console.log(`${API_URL}/movies/${movieId}`);
-      console.log(response.data);
+      console.log(movieId);
+      console.log(`${API}/movies/${movieId}`);
       return response.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
@@ -99,6 +99,7 @@ export const getMoviesList = createAsyncThunk<Movie[], SearchParams>(
   `movies/list`,
   async (params, thunkAPI: any) => {
     try {
+      API = API_URL.includes("http") ? API_URL : import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("token");
       const query: Record<string, string | number> = {};
       if (params.combinedSearch) {
@@ -114,7 +115,7 @@ export const getMoviesList = createAsyncThunk<Movie[], SearchParams>(
 
       const queryString = new URLSearchParams(query as any).toString();
       //console.log(queryString);
-      const response = await axios.get(`${API_URL}/movies?${queryString}`, {
+      const response = await axios.get(`${API}/movies?${queryString}`, {
         headers: {
           Authorization: `${token}`,
         },
@@ -133,8 +134,9 @@ export const getMoviesList = createAsyncThunk<Movie[], SearchParams>(
 export const deleteMovie = createAsyncThunk<string, number>(
   `movies/delete`,
   async (id) => {
+    API = API_URL.includes("http") ? API_URL : import.meta.env.VITE_API_URL;
     const token = localStorage.getItem("token");
-    const response = await axios.delete(`${API_URL}/movies/${id}`, {
+    const response = await axios.delete(`${API}/movies/${id}`, {
       headers: {
         Authorization: `${token}`,
       },
@@ -170,8 +172,6 @@ const moviesSlice = createSlice({
       .addCase(getMovie.fulfilled, (state, action) => {
         const movie = action.payload;
         //@ts-ignore
-        state.selected = movie.data;
-        //@ts-ignore
         state.byId[movie.data.id] = movie.data;
         //@ts-ignore
         console.log(movie.data);
@@ -182,7 +182,6 @@ const moviesSlice = createSlice({
         state.error = movie as string;
         state.loading = false;
         console.log(movie);
-        state.selected = null;
       })
 
       .addCase(getMoviesList.pending, (state) => {

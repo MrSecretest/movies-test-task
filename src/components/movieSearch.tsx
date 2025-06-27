@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../store";
-import {
-  getMovie,
-  getMoviesList,
-  type Movie,
-} from "../features/movies/moviesSlice";
+import { getMovie, getMoviesList } from "../features/movies/moviesSlice";
 import MovieExpandable from "./movie";
 
 function MovieSearch() {
@@ -15,13 +11,8 @@ function MovieSearch() {
   const [sort, setSort] = useState<"id" | "title" | "year">("id");
   const [order, setOrder] = useState<"ASC" | "DESC">("ASC");
   const [advancedSearch, setAdvancedSearch] = useState(false);
-  const [foundMovie, setFoundMovie] = useState<Movie>();
-  const [movieId, setMovieId] = useState<number>(0);
+  const [movieId] = useState<number>(0);
   const [combinedSearch, setCombinedSearch] = useState("");
-
-  const selectedMovie = useSelector(
-    (state: RootState) => state.movies.selected
-  );
 
   const moviesList = useSelector((state: RootState) => state.movies.list);
 
@@ -41,12 +32,6 @@ function MovieSearch() {
       if (combinedSearch.length != 1) dispatch(getMoviesList(searchParams));
     }
   };
-
-  useEffect(() => {
-    if (selectedMovie) {
-      setFoundMovie(selectedMovie);
-    }
-  }, [selectedMovie]);
 
   useEffect(() => {
     console.log(moviesList);
@@ -90,13 +75,6 @@ function MovieSearch() {
                 <option value="DESC">DESC</option>
               </select>
             </div>
-            <p>Search by</p>
-            <input
-              type="number"
-              placeholder="Movie ID"
-              value={movieId}
-              onChange={(e) => setMovieId(Number(e.target.value))}
-            />
           </div>
         ) : (
           <div>
@@ -120,19 +98,14 @@ function MovieSearch() {
         </label>
       </form>
       <div className="foundMovies">
-        <p>Movies: {moviesList.length}</p>
-        {movieId && foundMovie && selectedMovie ? (
-          <MovieExpandable movieData={foundMovie} />
-        ) : (
-          Array.isArray(moviesList) &&
+        <p>Movies: {moviesList.filter((movie) => movie && movie.id).length}</p>
+        {Array.isArray(moviesList) &&
           moviesList.map((movie) => {
             if (!movie || !movie.id || !movie.title) {
               return null;
             }
-
             return <MovieExpandable key={movie.id} movieData={movie} />;
-          })
-        )}
+          })}
       </div>
     </div>
   );

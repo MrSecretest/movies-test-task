@@ -79,7 +79,7 @@
 .advanced-search {
   display: flex;
   flex-direction: column;
-  height: 250px;
+  height: 150px;
   overflow: hidden;
 }
 
@@ -111,11 +111,12 @@
 .search-switcher {
   display: flex;
   max-height: 340px;
+  min-height: 185px;
   background-color: #111111d7;
   border-radius: 10px;
   backdrop-filter: blur(10px);
   box-shadow: #000000 0px 0px 50px;
-  padding-top: 10px;
+  padding-top: 30px;
   flex-direction: column;
   gap: 10px;
   width: 275px;

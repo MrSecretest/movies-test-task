@@ -25,10 +25,16 @@ const initialState: SessionState = {
   infoStatus: "",
   error: null,
 };
+
+let API: string;
+
 export const userCreate = createAsyncThunk<string, AuthCredentials>(
   "users",
   async (UserData: AuthCredentials, thunkAPI: any) => {
-    const response = await axios.post(`${API_URL}/users`, UserData);
+    API = API_URL.includes("http") ? API_URL : import.meta.env.VITE_API_URL;
+    const response = await axios.post(`${API}/users`, UserData);
+    console.log(`API_URL: ${API_URL} `);
+    console.log(`API: ${API} `);
 
     if (response.data?.status === 0 && response.data?.error) {
       const code = response.data.error.code;
