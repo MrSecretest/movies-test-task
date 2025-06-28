@@ -72,7 +72,11 @@ const sessionSlice = createSlice({
       )
       .addCase(sessionCreate.rejected, (state, action) => {
         state.status = "failed";
-        (action.payload as string) || action.error.message || "Sign in failed";
+
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          "Sign in failed";
       });
   },
 });
