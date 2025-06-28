@@ -15,3 +15,8 @@ Uses weblylabhub/movies [docker image](https://hub.docker.com/r/webbylabhub/movi
 5. Run it with: `docker run --name movies -p 8000:8000 webbylabhub/movies` to start pulled image
 6. Create `.env` file and specify there backend API URL with variable `VITE_API_URL`, check `.env.example` for example (Default backend link: http://localhost:8000/api/v1)
 7. Now if VITE_API_URL is set to backend URL service, you can `npm run dev`
+
+## To build Docker image
+1. Clone this repository
+2. `cd` into repository
+3. Run `docker build -t olehkulys/movies-frontend .`
