@@ -30,7 +30,7 @@ function MovieSearch() {
         order,
         limit: "1000",
       };
-      if (combinedSearch.length != 1) dispatch(getMoviesList(searchParams));
+      if (combinedSearch.length != 1 && actor.length != 1 && title.length != 1) dispatch(getMoviesList(searchParams));
     }
   };
 
