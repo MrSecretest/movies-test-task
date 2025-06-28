@@ -1,69 +1,17 @@
-# React + TypeScript + Vite
+## Movies Frontend test-task
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Uses weblylabhub/movies [docker image](https://hub.docker.com/r/webbylabhub/movies) as a backend service.
 
-Currently, two official plugins are available:
+## To launch using Docker Image
+1. Get this [frontend docker image](https://hub.docker.com/r/olehkulys/movies-frontend)
+2. To connect to backend - pull this [backend docker image](https://hub.docker.com/r/webbylabhub/movies) and start it with `docker run --name movies -p 8000:8000 webbylabhub/movies`
+3. Run frontend using `docker run --name movies-frontend -p 3000:80 -e API_BASE_URL=http://localhost:8000/api/v1 olehkulys/movies-frontend`, you can specify your backend URL, e.g `API_BASE_URL=http://localhost:2551/api/v5` or leave it as is
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## To launch Development Server
+1. Clone this repository 
+2. `cd` into a directory of this cloned project
+3. `run npm install`
+4. Pull [backend docker image](https://hub.docker.com/r/webbylabhub/movies)
+5. Run it with: `docker run --name movies -p 8000:8000 webbylabhub/movies` to start pulled image
+6. Create `.env` file and specify there backend API URL with variable `VITE_API_URL`, check `.env.example` for example (Default backend link: http://localhost:8000/api/v1)
+7. Now if VITE_API_URL is set to backend URL service, you can `npm run dev`
