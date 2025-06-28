@@ -91,7 +91,8 @@ button:hover {
 
 .website-page {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+  overflow-y: hidden;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
@@ -114,6 +115,7 @@ button:hover {
   align-items: center;
   flex-direction: column;
   justify-content: center;
+  overflow-y: hidden;
 }
 
 .auth-container {
@@ -121,7 +123,7 @@ button:hover {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #111111d7;
+  background-color: hsla(0, 0%, 7%, 0.843);
   border-radius: 10px;
   backdrop-filter: blur(10px);
   box-shadow: #000000 0px 0px 50px;

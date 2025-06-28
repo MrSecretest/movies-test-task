@@ -5,10 +5,11 @@ import { addMovie } from "../features/movies/moviesSlice";
 import "../styles/movies.css";
 import MovieSearch from "./movieSearch";
 import type { RootState } from "../store";
+import { AnimatePresence, motion } from "motion/react";
 
 export default function Movies() {
   const [title, setTitle] = useState("");
-  const [year, setYear] = useState<number>(0);
+  const [year, setYear] = useState<number>();
   const [format, setFormat] = useState("");
   const [actor, setActor] = useState("");
   const [txtFile, setTxtFile] = useState<string>("");
@@ -25,6 +26,7 @@ export default function Movies() {
     dispatch(
       addMovie({
         title: title,
+        //@ts-ignore
         year: year,
         format: format,
         actors: actorsArray,
@@ -93,57 +95,64 @@ export default function Movies() {
 
   return (
     <>
-      {addMoviePopup ? (
-        <div className="popUp">
-          <p>Add movie</p>
-          <form onSubmit={handleSubmit} className="add-movies-container">
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Title"
-              type="name"
-              required
-            />
-            <input
-              value={year}
-              onChange={(e) => setYear(Number(e.target.value))}
-              placeholder="Year"
-              type="year"
-              required
-            />
-            <input
-              value={format}
-              onChange={(e) => setFormat(e.target.value)}
-              placeholder="Format"
-              required
-            />
-            <textarea
-              className="add-actors"
-              value={actor}
-              onChange={(e) => setActor(e.target.value)}
-              placeholder="Actors"
-              required
-            />
-            <p>Or load .TXT file down below</p>
-            <input
-              type="file"
-              id="txtpicker"
-              accept=".txt"
-              onChange={handleTextFileSubmit}
-            />
-            <button style={{ marginTop: "20px" }} onSubmit={handleSubmit}>
-              Submit
+      <AnimatePresence>
+        {addMoviePopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 0.2,
+            }}
+            className="popUp"
+          >
+            <p>Add movie</p>
+            <form onSubmit={handleSubmit} className="add-movies-container">
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Title"
+                type="name"
+                required
+              />
+              <input
+                value={year}
+                onChange={(e) => setYear(Number(e.target.value))}
+                placeholder="Year"
+                type="year"
+                required
+              />
+              <input
+                value={format}
+                onChange={(e) => setFormat(e.target.value)}
+                placeholder="Format"
+                required
+              />
+              <textarea
+                className="add-actors"
+                value={actor}
+                onChange={(e) => setActor(e.target.value)}
+                placeholder="Actors"
+                required
+              />
+              <p>Or load .TXT file down below</p>
+              <input
+                type="file"
+                id="txtpicker"
+                accept=".txt"
+                onChange={handleTextFileSubmit}
+              />
+              <button style={{ marginTop: "20px" }} onSubmit={handleSubmit}>
+                Submit
+              </button>
+            </form>
+            <p style={{ color: "red" }}>{errorAddMovie}</p>
+            <button className="caution" onClick={switchPopUpState}>
+              Cancel
             </button>
-          </form>
-          <p style={{ color: "red" }}>{errorAddMovie}</p>
-          <button className="caution" onClick={switchPopUpState}>
-            Cancel
-          </button>
-        </div>
-      ) : (
-        <></>
-      )}
-
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div
         style={{
           display: "flex",

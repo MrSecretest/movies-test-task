@@ -8,6 +8,7 @@ import {
 } from "../features/movies/moviesSlice";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../store";
+import { AnimatePresence, motion } from "motion/react";
 
 type MovieExpandableProps = {
   movieData: Movie;
@@ -42,33 +43,49 @@ function MovieExpandable({ movieData }: MovieExpandableProps) {
 
   return (
     <>
-      <>
-        <div className="movie-expandable">
-          <p>{movieData?.title}</p>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            <p className="secondary-text">• {movieData?.year}</p>
-            <button onClick={handleMoreInfo}>More</button>
-            <button className="caution" onClick={handleDelete}>
-              Delete
-            </button>
-          </div>
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, x: 50 }}
+        transition={{
+          duration: 0.2,
+        }}
+        className="movie-expandable"
+      >
+        <p>{movieData?.title}</p>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <p className="secondary-text">• {movieData?.year}</p>
+          <button onClick={handleMoreInfo}>More</button>
+          <button className="caution" onClick={handleDelete}>
+            Delete
+          </button>
         </div>
+      </motion.div>
+      <AnimatePresence>
         {expanded && (
-          <div className="add-info">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{
+              duration: 0.2,
+            }}
+            className="add-info"
+          >
             <h4>Actors</h4>
             {movieDetails?.actors?.map((actor: Actor) => (
               <p key={actor.id}>•{actor.name}</p>
             ))}
-          </div>
+          </motion.div>
         )}
-      </>
+      </AnimatePresence>
     </>
   );
 }

@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../store";
 import { useState } from "react";
 import { sessionCreate } from "../features/users/sessionSlice";
+import { motion } from "motion/react";
 
 interface SignUpProps {
   onSuccess: () => void;
@@ -22,7 +23,16 @@ export default function SignUp({ onSuccess }: SignUpProps) {
       });
   };
   return (
-    <form onSubmit={handleSubmit} className="auth-box">
+    <motion.form
+      initial={{ opacity: 0, y: -100 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 100 }}
+      transition={{
+        duration: 0.2,
+      }}
+      onSubmit={handleSubmit}
+      className="auth-box"
+    >
       <p
         style={{ fontSize: "large", fontWeight: "800px", marginBottom: "30px" }}
       >
@@ -51,6 +61,6 @@ export default function SignUp({ onSuccess }: SignUpProps) {
           {error}
         </p>
       )}
-    </form>
+    </motion.form>
   );
 }

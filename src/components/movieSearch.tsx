@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../store";
 import { getMovie, getMoviesList } from "../features/movies/moviesSlice";
 import MovieExpandable from "./movie";
+import { AnimatePresence } from "motion/react";
 
 function MovieSearch() {
   const dispatch = useDispatch<AppDispatch>();
@@ -99,13 +100,15 @@ function MovieSearch() {
       </form>
       <div className="foundMovies">
         <p>Movies: {moviesList.filter((movie) => movie && movie.id).length}</p>
-        {Array.isArray(moviesList) &&
-          moviesList.map((movie) => {
-            if (!movie || !movie.id || !movie.title) {
-              return null;
-            }
-            return <MovieExpandable key={movie.id} movieData={movie} />;
-          })}
+        <AnimatePresence>
+          {Array.isArray(moviesList) &&
+            moviesList.map((movie) => {
+              if (!movie || !movie.id || !movie.title) {
+                return null;
+              }
+              return <MovieExpandable key={movie.id} movieData={movie} />;
+            })}
+        </AnimatePresence>
       </div>
     </div>
   );
